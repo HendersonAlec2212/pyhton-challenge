@@ -17,6 +17,9 @@ import csv
 # Thoughts - to be deleted --------------------------------------------------------------------------
 # import the files to be read
 # export the files to be written
+# use empty string for winning candidate name
+# differentiate the votes per candidate by using dictionary and having one of the values to be the key,
+# candidate name maybe?
 
 # Count the votes
 # list candidates hint:list
@@ -34,12 +37,39 @@ import csv
 
 # ----------------------------------------------------------------------------------------------------
 infile = os.path.join("Resources_PyPoll", "election_data.csv")
-
+outfile = os.path.join("PyPoll", "Analysis")
 
 # set parameters
+
+# total votes
 total_votes = 0
+winning_candidate_votes = 0
 
+# votes for candidates
+candidate_list = []
+candidate_votes = {}
+winning_candidate = ""
 
+with open(infile) as election_data:
+    csv_reader = csv.reader(election_data)
+    # check the header
+    header = next(csv_reader)
+    print(header)
 
+    # start the loop
+    for row in csv_reader:
+
+        # designate the names
+        candidate_name = row[2]
+
+        # running total for votes
+        total_votes += 1
+
+        # if the name isnt in the list, add to list and set the votes of new entry to zero
+        if candidate_name not in candidate_list:
+            candidate_list.append(candidate_name)
+            candidate_votes[candidate_name] = 0
+        else:
+            candidate_votes[candidate_name] = candidate_votes[candidate_name] + 1
 
 
