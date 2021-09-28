@@ -1,43 +1,8 @@
 import os
 import csv
 
-#   * The total number of votes cast
-#
-#   * A complete list of candidates who received votes
-#
-#   * The percentage of votes each candidate won
-#
-#   * The total number of votes each candidate won
-#
-#   * The winner of the election based on popular vote.
-#
-# * As an example, your analysis should look similar to the one below:
-
-
-# Thoughts - to be deleted --------------------------------------------------------------------------
-# import the files to be read
-# export the files to be written
-# use empty string for winning candidate name
-# differentiate the votes per candidate by using dictionary and having one of the values to be the key,
-# candidate name maybe?
-
-# Count the votes
-# list candidates hint:list
-
-# % votes for each candidate & total number votes won
-
-# winner based on greatest number of votes
-
-
-# if value in (row[2]) = khan then khan_vote =+1
-# elseif value = Li them +=1
-# else if O'Tooley
-# elseif Correy
-
-
-# ----------------------------------------------------------------------------------------------------
 infile = os.path.join("Resources_PyPoll", "election_data.csv")
-outfile = os.path.join("PyPoll", "Analysis")
+outfile = os.path.join("Analysis", "election_results.txt")
 
 # set parameters
 
@@ -50,11 +15,11 @@ candidate_list = []
 candidate_votes = {}
 winning_candidate = ""
 
-with open(infile) as election_data:
+with open(infile, 'r') as election_data:
     csv_reader = csv.reader(election_data)
     # check the header
     header = next(csv_reader)
-    print(header)
+    # print(header)
 
     # start the loop
     for row in csv_reader:
@@ -65,11 +30,48 @@ with open(infile) as election_data:
         # running total for votes
         total_votes += 1
 
-        # if the name isnt in the list, add to list and set the votes of new entry to zero
+        # if the name isn't in the list, add to list and set the votes of new entry to zero
         if candidate_name not in candidate_list:
             candidate_list.append(candidate_name)
             candidate_votes[candidate_name] = 0
-        else:
-            candidate_votes[candidate_name] = candidate_votes[candidate_name] + 1
 
+            # add a vote to the corresponding candidate
+        candidate_votes[candidate_name] = candidate_votes[candidate_name] + 1
 
+# complete operation for tabulating under the with statement to save text files with less hassle
+with open(outfile, 'w') as txt_file:
+
+    # print to terminal - make it look like the ReadME
+    election_results = (
+        f"Election Results\n"
+        f"-------------------------\n"
+        f"Total Votes: {total_votes}\n"
+        f"-------------------------\n"
+    )
+    print(f"{election_results}")
+    # save the file
+    txt_file.write(election_results)
+
+    # loop through counts to compare values and decide the winner
+    for candidate in candidate_votes:
+        votes = candidate_votes.get(candidate)
+        vote_percent = round(float(votes) / float(total_votes) * 100, 2)
+        # print(candidate_votes)
+        # compare vote values and end the loop w/ the largest value
+        if votes > winning_candidate_votes:
+            winning_candidate_votes = votes
+            winning_candidate = candidate
+        # simple layout to follow the README
+        candidate_count = (f"{candidate}: {vote_percent}% ({votes})\n")
+        print(f"{candidate_count}")
+
+        txt_file.write(candidate_count)
+
+    voting_summary = (
+        f"-------------------------\n"
+        f"Winner: {winning_candidate}\n"
+        f"-------------------------\n"
+         )
+    print(f"{voting_summary}")
+
+    txt_file.write(voting_summary)
